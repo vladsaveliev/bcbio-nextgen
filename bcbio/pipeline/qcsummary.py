@@ -151,7 +151,7 @@ def _run_qc_tools(bam_file, data):
             # Check for files only output
             if "base" in out:
                 qc_files = out
-        elif out and isinstance(out, basestring) and os.path.exists(out):
+        elif out and isinstance(out, str) and os.path.exists(out):
             qc_files = {"base": out, "secondary": []}
         if not qc_files:
             qc_files = _organize_qc_files(program_name, cur_qc_dir)

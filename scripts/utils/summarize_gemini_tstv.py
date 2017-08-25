@@ -18,7 +18,7 @@ def main(work_dir):
             cur[stat] = calculate_gemini_stat(stat, fname)
         out.append(cur)
     df = pandas.DataFrame(out)
-    print df
+    print(df)
 
 def calculate_gemini_stat(stat, fname):
     out = sh.gemini("stats", "--{0}".format(stat), fname)

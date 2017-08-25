@@ -81,7 +81,7 @@ def _sv_vcf_to_bed(orig_vcf, caller, base_out):
         with pysam.VariantFile(orig_vcf) as bcf_in:
             with open(out_file, "w") as out_handle:
                 for rec in bcf_in:
-                    if len(rec.filter.keys()) == 0 or rec.filter.keys()[0] in ["PASS", "."]:
+                    if len(rec.filter.keys()) == 0 or list(rec.filter.keys())[0] in ["PASS", "."]:
                         out_handle.write("%s\t%s\t%s\n" % (rec.chrom, rec.start, rec.info.get("END", rec.start)))
     return out_file
 

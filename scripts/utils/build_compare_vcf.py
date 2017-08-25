@@ -14,7 +14,7 @@ import random
 import vcf
 
 def main(in_file):
-    out_file = apply("{0}-cmp{1}".format, os.path.splitext(in_file))
+    out_file = "{0}-cmp{1}".format(*os.path.splitext(in_file))
     with open(in_file) as in_handle:
         with open(out_file, "w") as out_handle:
             rdr = vcf.Reader(in_handle)

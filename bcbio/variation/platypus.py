@@ -63,7 +63,7 @@ def _subset_regions(region, base_file, items):
     """
     variant_regions = bedutils.merge_overlaps(bedutils.population_variant_regions(items), items[0])
     target = pshared.subset_variant_regions(variant_regions, region, base_file, items)
-    if isinstance(target, basestring) and os.path.isfile(target):
+    if isinstance(target, str) and os.path.isfile(target):
         return target
     else:
         return bamprep.region_to_gatk(target)

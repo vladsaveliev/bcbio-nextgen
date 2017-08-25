@@ -72,7 +72,7 @@ if __name__ == "__main__":
     parser.add_option("-y", "--year", dest="year")
     (options, args) = parser.parse_args()
     if len(args) != 1:
-        print __doc__
+        print(__doc__)
         sys.exit()
     cur_year, cur_month = datetime.now().timetuple()[:2]
     if not options.month:

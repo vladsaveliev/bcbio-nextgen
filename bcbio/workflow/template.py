@@ -206,7 +206,7 @@ def _set_global_vars(metadata):
     fnames = collections.defaultdict(list)
     for sample in metadata.keys():
         for k, v in metadata[sample].items():
-            if isinstance(v, basestring) and os.path.isfile(v):
+            if isinstance(v, str) and os.path.isfile(v):
                 v = _expand_file(v)
                 metadata[sample][k] = v
                 fnames[v].append(k)
@@ -235,7 +235,7 @@ def _parse_metadata(in_handle):
     metadata = {}
     reader = csv.reader(in_handle)
     while 1:
-        header = reader.next()
+        header = next(reader)
         if not header[0].startswith("#"):
             break
     keys = [x.strip() for x in header[1:]]
@@ -418,7 +418,7 @@ def _convert_to_relpaths(data, work_dir):
     data["files"] = [os.path.relpath(f, work_dir) for f in data["files"]]
     for topk in ["metadata", "algorithm"]:
         for k, v in data[topk].items():
-            if isinstance(v, basestring) and os.path.isfile(v) and os.path.isabs(v):
+            if isinstance(v, str) and os.path.isfile(v) and os.path.isabs(v):
                 data[topk][k] = os.path.relpath(v, work_dir)
     return data
 

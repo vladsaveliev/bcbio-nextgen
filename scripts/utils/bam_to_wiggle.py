@@ -131,8 +131,8 @@ if __name__ == "__main__":
                       action="store_true", default=False)
     (options, args) = parser.parse_args()
     if len(args) not in [1, 2]:
-        print "Incorrect arguments"
-        print __doc__
+        print("Incorrect arguments")
+        print(__doc__)
         sys.exit()
     kwargs = dict(
         outfile=options.outfile,

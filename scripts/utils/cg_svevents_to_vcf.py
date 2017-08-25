@@ -27,7 +27,7 @@ def main(svevents_file, genome_file):
     genome_2bit = twobit.TwoBitFile(open(genome_file))
     for event in svevent_reader(svevents_file):
         for vcf_line in _svevent_to_vcf(event):
-            print vcf_line
+            print(vcf_line)
 
 # ## Convert different types of svEvents into VCF info
 
@@ -49,7 +49,7 @@ def _svevent_to_vcf(event):
     return out
 
 def _convert_event_inv(event):
-    print event
+    print(event)
     return []
 
 def _convert_event_del(event):
@@ -66,7 +66,7 @@ def svevent_reader(in_file):
     """
     with open(in_file) as in_handle:
         while 1:
-            line = in_handle.next()
+            line = next(in_handle)
             if line.startswith(">"):
                 break
         header = line[1:].rstrip().split("\t")

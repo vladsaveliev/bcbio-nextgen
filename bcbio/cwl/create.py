@@ -13,6 +13,7 @@ import yaml
 from bcbio import utils
 from bcbio.cwl import defs, workflow
 from bcbio.distributed import objectstore, resources
+from functools import reduce
 
 def from_world(world, run_info_file, integrations=None):
     base = utils.splitext_plus(os.path.basename(run_info_file))[0]
@@ -322,7 +323,7 @@ def _flatten_samples(samples, base_file, integrations=None):
                 cur_flat[flat_key] = flat_val
         flat_data.append(cur_flat)
     out = {}
-    for key in sorted(list(set(reduce(operator.add, [d.keys() for d in flat_data])))):
+    for key in sorted(list(set(reduce(operator.add, [list(d.keys()) for d in flat_data])))):
         out[key] = []
         for cur_flat in flat_data:
             out[key].append(cur_flat.get(key))
@@ -432,7 +433,7 @@ def _get_avro_type(val):
     elif val is None:
         return ["null", "string"]
     # encode booleans as string True/False and unencode on other side
-    elif isinstance(val, bool) or isinstance(val, basestring) and val.lower() in ["true", "false", "none"]:
+    elif isinstance(val, bool) or isinstance(val, str) and val.lower() in ["true", "false", "none"]:
         return ["string", "null", "boolean"]
     elif isinstance(val, int):
         return "long"
@@ -499,7 +500,7 @@ def _item_to_cwldata(x):
     """
     if isinstance(x, (list, tuple)):
         return [_item_to_cwldata(subx) for subx in x]
-    elif (x and isinstance(x, basestring) and
+    elif (x and isinstance(x, str) and
           (((os.path.isfile(x) or os.path.isdir(x)) and os.path.exists(x)) or
            objectstore.is_remote(x))):
         if os.path.isfile(x) or objectstore.is_remote(x):

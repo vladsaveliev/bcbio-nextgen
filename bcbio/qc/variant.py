@@ -42,7 +42,7 @@ def get_active_vcinfo(data):
     callers = dd.get_variantcaller(data)
     if not callers:
         return None
-    if isinstance(callers, basestring):
+    if isinstance(callers, str):
         callers = [callers]
     active_vs = []
     if "variants" in data:

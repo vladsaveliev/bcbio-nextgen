@@ -49,7 +49,7 @@ except (ImportError, LookupError):
 def main(recal_bam, fastq1, fastq2=None, chunk_size=None, input_format=None,
         db_dir=None, work_dir=None):
     if not _are_libraries_installed():
-        print "R libraries or rpy2 not installed. Not running recalibration plot."
+        print("R libraries or rpy2 not installed. Not running recalibration plot.")
         return
     if work_dir is None:
         work_dir = os.getcwd()
@@ -72,16 +72,16 @@ def main(recal_bam, fastq1, fastq2=None, chunk_size=None, input_format=None,
         plots = []
         db_file = os.path.join(db_dir, "%s_%s-qualities.sqlite" % (base, pair))
         if not os.path.exists(db_file):
-            print "Converting BAM alignment to fastq files"
+            print("Converting BAM alignment to fastq files")
             recal_fastq1, recal_fastq2 = bam_to_fastq(recal_bam, len(pairs) > 1)
             recal_files = {1: recal_fastq1, 2: recal_fastq2}
-            print "Normalizing and sorting fastq files"
+            print("Normalizing and sorting fastq files")
             orig = sort_csv(fastq_to_csv(orig_files[pair], input_format,
                 work_dir))
             recal = sort_csv(fastq_to_csv(recal_files[pair], "fastq", work_dir))
-            print "Summarizing remapped qualities for pair", pair
+            print("Summarizing remapped qualities for pair", pair)
             summarize_qualities(db_file, orig, recal, chunk_size)
-        print "Plotting for pair", pair
+        print("Plotting for pair", pair)
         for position_select, pname in _positions_to_examine(db_file):
             title = "Pair %s; Position: %s" % (pair, position_select)
             plot_file = os.path.join(image_dir,
@@ -95,7 +95,7 @@ def main(recal_bam, fastq1, fastq2=None, chunk_size=None, input_format=None,
 
 def _are_libraries_installed():
     if robjects is None:
-        print "rpy2 not installed: http://rpy.sourceforge.net/rpy2.html"
+        print("rpy2 not installed: http://rpy.sourceforge.net/rpy2.html")
         return False
     import rpy2.rinterface
     try:
@@ -105,7 +105,7 @@ def _are_libraries_installed():
           library(ggplot2)
         ''')
     except rpy2.rinterface.RRuntimeError:
-        print "Some R libraries not installed"
+        print("Some R libraries not installed")
         return False
     return True
 
@@ -185,7 +185,7 @@ def _organize_by_position(orig_file, cmp_file, chunk_size):
     """
     with open(orig_file) as in_handle:
         reader1 = csv.reader(in_handle)
-        positions = len(reader1.next()) - 1
+        positions = len(next(reader1)) - 1
     for positions in _chunks(range(positions), chunk_size):
         with open(orig_file) as orig_handle:
             with open(cmp_file) as cmp_handle:
@@ -200,7 +200,7 @@ def _chunks(l, n):
 
     http://stackoverflow.com/questions/312443/how-do-you-split-a-list-into-evenly-sized-chunks-in-python
     """
-    for i in xrange(0, len(l), n):
+    for i in range(0, len(l), n):
         yield l[i:i+n]
 
 def _counts_at_position(positions, orig_reader, cmp_reader):
@@ -210,15 +210,15 @@ def _counts_at_position(positions, orig_reader, cmp_reader):
                  collections.defaultdict(lambda:
                  collections.defaultdict(int)))
     for orig_parts in orig_reader:
-        cmp_parts = cmp_reader.next()
+        cmp_parts = next(cmp_reader)
         for pos in positions:
             try:
                 pos_counts[pos][int(orig_parts[pos+1])][int(cmp_parts[pos+1])] += 1
             except IndexError:
                 pass
-    for pos, count_dict in pos_counts.iteritems():
-        for orig_val, cmp_dict in count_dict.iteritems():
-            for cmp_val, count in cmp_dict.iteritems():
+    for pos, count_dict in pos_counts.items():
+        for orig_val, cmp_dict in count_dict.items():
+            for cmp_val, count in cmp_dict.items():
                 yield pos+1, orig_val, cmp_val, count
 
 def sort_csv(in_file):

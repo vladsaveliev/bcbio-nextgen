@@ -18,6 +18,7 @@ from bcbio.galaxy.api import GalaxyApiAccess
 from bcbio.illumina import flowcell
 from bcbio.pipeline.run_info import clean_name
 from bcbio.workflow import template
+from functools import reduce
 
 def prep_samples_and_config(run_folder, ldetails, fastq_dir, config):
     """Prepare sample fastq files and provide global sample configuration for the flowcell.
@@ -105,7 +106,7 @@ def _select_default_algorithm(analysis):
 def _relative_paths(xs, base_path):
     """Adjust paths to be relative to the provided base path.
     """
-    if isinstance(xs, basestring):
+    if isinstance(xs, str):
         if xs.startswith(base_path):
             return xs.replace(base_path + "/", "", 1)
         else:

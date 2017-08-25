@@ -2,7 +2,7 @@
 """
 import collections
 import os
-import itertools
+from six.moves import zip_longest
 import signal
 import subprocess
 import numpy
@@ -285,10 +285,10 @@ def _check_bam_contigs(in_bam, ref_file, config):
     extra_rcs = [x for x in ref_contigs if x not in bam_contigs]
     problems = []
     warnings = []
-    for bc, rc in itertools.izip_longest([x for x in bam_contigs if (x not in extra_bcs and
-                                                                     x not in allowed_outoforder)],
-                                         [x for x in ref_contigs if (x not in extra_rcs and
-                                                                     x not in allowed_outoforder)]):
+    for bc, rc in zip_longest([x for x in bam_contigs if (x not in extra_bcs and
+                                                          x not in allowed_outoforder)],
+                              [x for x in ref_contigs if (x not in extra_rcs and
+                                                          x not in allowed_outoforder)]):
         if bc != rc:
             if bc and rc:
                 problems.append("Reference mismatch. BAM: %s Reference: %s" % (bc, rc))

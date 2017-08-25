@@ -38,7 +38,7 @@ def main(log_file):
                 cur_process = line.split(":")[-1].strip()
                 prev_time = cur_time
     header = ["Total", str(total_time).replace(":00", "")]
-    print tabulate(vals, header, tablefmt="orgtbl")
+    print(tabulate(vals, header, tablefmt="orgtbl"))
 
 if __name__ == "__main__":
     main(sys.argv[1])

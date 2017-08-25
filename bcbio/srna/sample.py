@@ -9,7 +9,11 @@ from collections import Counter
 from contextlib import closing
 from distutils.version import LooseVersion
 
-from seqcluster.libs.fastq import collapse, write_output
+try:
+    from seqcluster.libs.fastq import collapse, write_output
+except ImportError:
+    pass
+
 try:
     from dnapilib.apred import iterative_adapter_prediction
     error_dnapi = None
@@ -54,7 +58,7 @@ def trim_srna_sample(data):
     adapters = adapter if adapter else _dnapi_prediction(in_file)
     times = "" if len(adapters) == 1 else "--times %s" % len(adapters)
     if trim_reads and adapters:
-        adapter_cmd = " ".join(map(lambda x: "-a " + x, adapters))
+        adapter_cmd = " ".join(["-a " + x for x in adapters])
         out_noadapter_file = replace_directory(append_stem(in_file, ".fragments"), out_dir)
         out_short_file = replace_directory(append_stem(in_file, ".short"), out_dir)
         log_out = os.path.join(out_dir, "%s.log" % names)
@@ -152,10 +156,10 @@ def _summary(in_file):
     with open(in_file) as in_handle:
         for line in in_handle:
             counts = int(line.strip().split("_x")[1])
-            line = in_handle.next()
+            line = next(in_handle)
             l = len(line.strip())
-            in_handle.next()
-            in_handle.next()
+            next(in_handle)
+            next(in_handle)
             data[l] += counts
     with file_transaction(out_file) as tx_out_file:
         with open(tx_out_file, 'w') as out_handle:

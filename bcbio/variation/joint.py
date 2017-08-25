@@ -76,7 +76,7 @@ def _get_callable_regions(data):
         assert len(callable_files) == 1
         regions = [(r.chrom, int(r.start), int(r.stop)) for r in pybedtools.BedTool(callable_files[0])]
     else:
-        work_bam = list(tz.take(1, filter(lambda x: x.endswith(".bam"), data["work_bams"])))
+        work_bam = list(tz.take(1, [x for x in data["work_bams"] if x.endswith(".bam")]))
         if work_bam:
             with pysam.Samfile(work_bam[0], "rb") as pysam_bam:
                 regions = [(chrom, 0, length) for (chrom, length) in zip(pysam_bam.references,

@@ -62,7 +62,7 @@ def _combine_regional_coverage(in_bams, samplenames, chrom, start, end, work_dir
     return rbind(dfs)
 
 def _get_caller_colormap(callers):
-    colors = mpl.colors.ColorConverter.colors.keys()
+    colors = list(mpl.colors.ColorConverter.colors.keys())
     return {caller: colors[index] for index, caller in enumerate(callers)}
 
 def _get_caller_heights(callers, plot):

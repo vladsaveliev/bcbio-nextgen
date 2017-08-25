@@ -21,6 +21,7 @@ Lorena Pantano
 Version 0.2
 
 """
+from __future__ import print_function
 
 import sys
 from datetime import datetime
@@ -108,12 +109,12 @@ def gb2gtf( gbk_fn, gtf_fn, source='gb2gtf', allowedTypes=set(['gene','CDS','tRN
               else:
                 comments += '; gene_biotype "%s"' % source
                 gtf_gene = '%s\t%s\t%s\t%s\t%s\t.\t%s\t.\t%s;' % ( acc, source, 'gene', f.location.start.position+1, f.location.end.position, strand, comments )
-                print >>out_handle, gtf_gene
+                print(gtf_gene, file=out_handle)
                 gtf_tx = '%s\t%s\t%s\t%s\t%s\t.\t%s\t.\t%s;' % ( acc, source, 'transcript', f.location.start.position+1, f.location.end.position, strand, comments )
-                print >>out_handle, gtf_tx
+                print(gtf_tx, file=out_handle)
                 comments += '; exon_number "1"'
                 gtf_exon = '%s\t%s\t%s\t%s\t%s\t.\t%s\t.\t%s;' % ( acc, source, 'exon', f.location.start.position+1, f.location.end.position, strand, comments )
-                print >>out_handle, gtf_exon
+                print(gtf_exon, file=out_handle)
 
             sys.stderr.write( "%s\tSkipped %s entries having types: %s.\n" % ( gb.id,skipped, ', '.join(skippedTypes) ) )
 
@@ -130,10 +131,10 @@ if __name__=='__main__':
     count = SeqIO.convert(args.gbk, "genbank", args.prefix + "_tmp.fa", "fasta")
     with open(args.prefix + ".fa", "w") as out_handle:
         with open(args.prefix + "_tmp.fa") as in_handle:
-            header = in_handle.next()
-            print >>out_handle, header.split()[0]
+            header = next(in_handle)
+            print(header.split()[0], file=out_handle)
             for line in in_handle:
-                print >>out_handle, line.strip()
+                print(line.strip(), file=out_handle)
 
     gb2gtf(args.gbk, args.prefix + ".gtf")
     dt=datetime.now() - t0

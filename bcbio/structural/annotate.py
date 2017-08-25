@@ -35,7 +35,7 @@ def _add_genes_to_bed(in_file, gene_file, fai_file, out_file, max_distance=10000
     """
     input_rec = iter(pybedtools.BedTool(in_file)).next()
     # keep everything after standard chrom/start/end, 1-based
-    extra_fields = range(4, len(input_rec.fields) + 1)
+    extra_fields = list(range(4, len(input_rec.fields) + 1))
     # keep the new gene annotation
     gene_index = len(input_rec.fields) + 4
     extra_fields.append(gene_index)

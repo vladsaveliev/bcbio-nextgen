@@ -1,3 +1,4 @@
+from __future__ import print_function
 import os
 import string
 import os.path as op
@@ -147,13 +148,12 @@ def report(data):
     summary_file = op.join(out_dir, "summary.csv")
     with file_transaction(summary_file) as out_tx:
         with open(out_tx, 'w') as out_handle:
-            print >>out_handle, "sample_id,%s" % _guess_header(data[0][0])
+            print("sample_id,%s" % _guess_header(data[0][0]), file=out_handle)
             for sample in data:
                 info = sample[0]
                 group = _guess_group(info)
                 files = info["seqbuster"] if "seqbuster" in info else "None"
-                print >>out_handle, ",".join([dd.get_sample_name(info),
-                                              group])
+                print(",".join([dd.get_sample_name(info), group]), file=out_handle)
     _modify_report(work_dir, out_dir)
     return summary_file
 
@@ -181,7 +181,7 @@ def _modify_report(summary_path, out_dir):
     out_content = string.Template(content).safe_substitute({'path_abs': summary_path})
     out_file = op.join(out_dir, "srna_report.rmd")
     with open(out_file, 'w') as out_handle:
-        print >>out_handle, out_content
+        print(out_content, file=out_handle)
     return out_file
 
 def _make_isomir_counts(data, srna_type="seqbuster", out_dir=None, stem=""):

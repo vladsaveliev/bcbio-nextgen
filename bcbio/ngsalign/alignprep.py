@@ -208,7 +208,7 @@ def merge_split_alignments(samples, run_parallel):
             ready.append([data])
     ready_merge = []
     hla_merges = []
-    for mgroup in to_merge.itervalues():
+    for mgroup in to_merge.values():
         cur_data = mgroup[0]
         del cur_data["align_split"]
         for x in mgroup[1:]:
@@ -263,7 +263,7 @@ def total_reads_from_grabix(in_file):
     gbi_file = in_file + ".gbi"
     if utils.file_exists(gbi_file):
         with open(gbi_file) as in_handle:
-            in_handle.next()  # throw away
+            next(in_handle)  # throw away
             num_lines = int(in_handle.next().strip())
         assert num_lines % 4 == 0, "Expected lines to be multiple of 4"
         return num_lines // 4

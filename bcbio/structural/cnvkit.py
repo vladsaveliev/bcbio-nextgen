@@ -25,6 +25,7 @@ from bcbio.pipeline import config_utils
 from bcbio.provenance import do
 from bcbio.variation import bedutils, effects, ploidy, population, vcfutils
 from bcbio.structural import annotate, shared, plot
+from functools import reduce
 
 def run(items, background=None):
     """Detect copy number variations from batched set of samples using CNVkit.

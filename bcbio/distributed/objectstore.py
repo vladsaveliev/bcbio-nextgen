@@ -12,7 +12,7 @@ import subprocess
 import sys
 import time
 import zlib
-
+from future.utils import implements_iterator
 import six
 
 from bcbio.distributed.transaction import file_transaction
@@ -104,6 +104,7 @@ class FileHandle(object):
         pass
 
 
+@implements_iterator
 class S3Handle(FileHandle):
 
     """File object for the Amazon S3 files."""
@@ -128,15 +129,16 @@ class S3Handle(FileHandle):
         """
         return self._key.read(size)
 
-    def next(self):
+    def __next__(self):
         """Return the next item from the container."""
-        return self._iter.next()
+        return next(self._iter)
 
     def close(self):
         """Close the file handle."""
         self._key.close(fast=True)
 
 
+@implements_iterator
 class BlobHandle(FileHandle):
 
     """File object for the Azure Blob files."""
@@ -218,9 +220,9 @@ class BlobHandle(FileHandle):
             self._pointer += size
             return chunk
 
-    def next(self):
+    def __next__(self):
         """Return the next item from the container."""
-        return self._iter.next()
+        return next(self._iter)
 
     def close(self):
         """Close the file handle."""

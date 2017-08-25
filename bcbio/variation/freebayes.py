@@ -50,7 +50,7 @@ def _freebayes_options_from_config(items, config, out_file, region=None):
     no_target_regions = False
     target = shared.subset_variant_regions(variant_regions, region, out_file, items)
     if target:
-        if isinstance(target, basestring) and os.path.isfile(target):
+        if isinstance(target, str) and os.path.isfile(target):
             if any(tz.get_in(["config", "algorithm", "coverage_interval"], x, "").lower() == "genome"
                    for x in items):
                 if os.path.getsize(target) == 0:

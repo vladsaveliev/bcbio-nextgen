@@ -82,7 +82,7 @@ def _filter_by_background(base_samples, back_samples, gt_vcfs, data):
                         with open(tx_out_file, "w") as out_handle:
                             outp = vcf.Writer(out_handle, inp)
                             for rec in inp:
-                                back_recs = [r.next() for r in back_readers]
+                                back_recs = [next(r) for r in back_readers]
                                 if _genotype_in_background(rec, back_recs):
                                     rec.add_filter(filtname)
                                 outp.write_record(rec)

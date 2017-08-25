@@ -199,7 +199,7 @@ def downsample(f1, f2, data, N, quick=False):
     else:
         records = sum(1 for _ in open(f1)) / 4
         N = records if N > records else N
-        rand_records = sorted(random.sample(xrange(records), N))
+        rand_records = sorted(random.sample(range(records), N))
 
     fh1 = open_possible_gzip(f1)
     fh2 = open_possible_gzip(f2) if f2 else None
@@ -215,7 +215,7 @@ def downsample(f1, f2, data, N, quick=False):
     out_files = (outf1, outf2) if outf2 else (outf1)
 
     with file_transaction(out_files) as tx_out_files:
-        if isinstance(tx_out_files, basestring):
+        if isinstance(tx_out_files, str):
             tx_out_f1 = tx_out_files
         else:
             tx_out_f1, tx_out_f2 = tx_out_files
@@ -247,7 +247,7 @@ def estimate_read_length(fastq_file, quality_format="fastq-sanger", nreads=1000)
     """
 
     in_handle = SeqIO.parse(open_fastq(fastq_file), quality_format)
-    read = in_handle.next()
+    read = next(in_handle)
     average = len(read.seq)
     for _ in range(nreads):
         try:

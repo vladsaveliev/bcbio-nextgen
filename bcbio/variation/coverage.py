@@ -2,6 +2,7 @@
 
 Provides estimates of coverage intervals based on callable regions
 """
+from __future__ import print_function
 import itertools
 import os
 import shutil
@@ -229,14 +230,14 @@ def _calculate_percentiles(in_file, sample, data=None, cutoffs=None):
 
         with file_transaction(data, out_total_file) as tx_file:
             with open(tx_file, 'w') as out_handle:
-                print >>out_handle, "cutoff_reads\tbases_pct\tsample"
+                print("cutoff_reads\tbases_pct\tsample", file=out_handle)
                 for k in pct_bases:
-                    print >>out_handle, "\t".join(map(str, [k, pct_bases[k], sample]))
+                    print("\t".join(map(str, [k, pct_bases[k], sample])), file=out_handle)
         with file_transaction(data, out_file) as tx_file:
             with open(tx_file, 'w') as out_handle:
-                print >>out_handle, "cutoff_reads\tregion_pct\tbases_pct\tsample"
+                print("cutoff_reads\tregion_pct\tbases_pct\tsample", file=out_handle)
                 for k in pct:
-                    print >>out_handle, "\t".join(map(str, [k[0], k[1], pct[k], sample]))
+                    print("\t".join(map(str, [k[0], k[1], pct[k], sample])), file=out_handle)
     # To move metrics to multiqc, will remove older files
     # when bcbreport accepts these one, to avoid errors
     # while porting everything to multiqc
@@ -274,13 +275,13 @@ def _add_high_covered_regions(in_file, bed_file, sample, data=None):
         with open(bed_file) as in_handle:
             with open(out_tx, 'w') as out_handle:
                 if "header" in regions:
-                    print >>out_handle, regions["header"]
+                    print(regions["header"], file=out_handle)
                 for line in in_handle:
                     idx = "".join(line.split("\t")[:2])
                     if idx not in regions:
-                        print >>out_handle, "%s\t1000\t1000\t100\t100\t100\t100\t100\t100\t100\t100\t100\t100\t%s" % (line.strip(), sample)
+                        print("%s\t1000\t1000\t100\t100\t100\t100\t100\t100\t100\t100\t100\t100\t%s" % (line.strip(), sample), file=out_handle)
                     else:
-                        print >>out_handle, regions[idx]
+                        print(regions[idx], file=out_handle)
     return out_file
 
 def _summary_variants(in_file, out_file, data=None):

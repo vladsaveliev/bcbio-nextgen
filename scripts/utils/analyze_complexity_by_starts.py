@@ -4,7 +4,7 @@ from bcbio.rnaseq import qc
 from collections import Counter
 import bcbio.bam as bam
 import bcbio.utils as utils
-from itertools import ifilter
+
 import bcbio.pipeline.datadict as dd
 
 import matplotlib
@@ -21,7 +21,7 @@ def count_duplicate_starts(bam_file, sample_size=10000000):
     count = Counter()
     with bam.open_samfile(bam_file) as samfile:
         # unmapped reads should not be counted
-        filtered = ifilter(lambda x: not x.is_unmapped, samfile)
+        filtered = filter(lambda x: not x.is_unmapped, samfile)
         def read_parser(read):
             return ":".join([str(read.tid), str(read.pos)])
         samples = utils.reservoir_sample(filtered, sample_size, read_parser)
@@ -63,8 +63,8 @@ if __name__ == "__main__":
         base, _ = os.path.splitext(args.alignment_file)
         df.to_csv(base + ".histogram", sep="\t", header=True, index=False)
     if args.complexity:
-        print qc.estimate_library_complexity(df)
+        print(qc.estimate_library_complexity(df))
     if args.counts:
         c = count_duplicate_starts(args.alignment_file)
         for item in c.items():
-            print "{0}\t{1}".format(item[0], item[1])
+            print("{0}\t{1}".format(item[0], item[1]))

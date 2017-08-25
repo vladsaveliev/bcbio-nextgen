@@ -26,6 +26,7 @@ Usage:
      -s scheduler for ipython parallelization (lsf, sge, slurm, torque, pbspro)
      -q queue to submit jobs for ipython parallelization
 """
+from __future__ import print_function
 import os
 import argparse
 import sys
@@ -192,10 +193,10 @@ def _add_inputs_to_kwargs(args, kwargs, parser):
     elif len(inputs) == 3:
         global_config, fc_dir, run_info_yaml = inputs
     elif args.version:
-        print version.__version__
+        print(version.__version__)
         sys.exit()
     else:
-        print "Incorrect input arguments", inputs
+        print("Incorrect input arguments", inputs)
         parser.print_help()
         sys.exit()
     if fc_dir:

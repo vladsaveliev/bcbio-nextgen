@@ -10,6 +10,7 @@ import itertools
 import functools
 import random
 from six.moves import configparser
+from six.moves import filterfalse
 import fnmatch
 import subprocess
 import sys
@@ -421,7 +422,7 @@ def robust_partition_all(n, iterable):
         x = []
         for _ in range(n):
             try:
-                x.append(it.next())
+                x.append(next(it))
             except StopIteration:
                 yield x
                 # Omitting this StopIteration results in a segfault!
@@ -432,8 +433,8 @@ def partition(pred, iterable, tolist=False):
     'Use a predicate to partition entries into false entries and true entries'
     # partition(is_odd, range(10)) --> 0 2 4 6 8   and  1 3 5 7 9
     t1, t2 = itertools.tee(iterable)
-    ifalse = itertools.ifilterfalse(pred, t1)
-    itrue = itertools.ifilter(pred, t2)
+    ifalse = filterfalse(pred, t1)
+    itrue = filter(pred, t2)
     if tolist:
         return list(ifalse), list(itrue)
     else:
@@ -537,7 +538,7 @@ def is_pair(arg):
     return is_sequence(arg) and len(arg) == 2
 
 def is_string(arg):
-    return isinstance(arg, basestring)
+    return isinstance(arg, str)
 
 
 def locate(pattern, root=os.curdir):
@@ -766,7 +767,7 @@ def filter_missing(xs):
     """
     remove items from a list if they evaluate to False
     """
-    return filter(lambda x: x, xs)
+    return [x for x in xs if x]
 
 def rbind(dfs):
     """

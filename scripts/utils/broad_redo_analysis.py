@@ -53,9 +53,9 @@ def process_lane(info, fastq_dir, fc_name, fc_date, config, config_file):
     genome_build = "%s%s" % (info["genome_build"],
                              config["algorithm"].get("ref_ext", ""))
     if info.get("analysis", "") == "Broad SNP":
-        print "Processing", info["lane"], genome_build, \
-                sample_name, info.get("researcher", ""), \
-                info.get("analysis", "")
+        print("Processing", info["lane"], genome_build,
+              sample_name, info.get("researcher", ""),
+              info.get("analysis", ""))
         lane_name = "%s_%s_%s" % (info['lane'], fc_date, fc_name)
         aligner_to_use = config["algorithm"]["aligner"]
         align_ref, sam_ref = get_genome_ref(genome_build,
@@ -65,12 +65,12 @@ def process_lane(info, fastq_dir, fc_name, fc_date, config, config_file):
         resort_bam = resort_karotype_and_rename(base_bam, sam_ref, util_script_dir)
         base_bam = resort_bam
         if config["algorithm"]["recalibrate"]:
-            print info['lane'], "Recalibrating with GATK"
+            print(info['lane'], "Recalibrating with GATK")
             dbsnp_file = get_dbsnp_file(config, sam_ref)
             gatk_bam = recalibrate_quality(base_bam, sam_ref,
                     dbsnp_file, config["program"]["picard"])
             if config["algorithm"]["snpcall"]:
-                print info['lane'], "Providing SNP genotyping with GATK"
+                print(info['lane'], "Providing SNP genotyping with GATK")
                 run_genotyper(gatk_bam, sam_ref, dbsnp_file, config_file)
 
 def resort_karotype_and_rename(in_bam, ref_file, script_dir):
@@ -81,10 +81,10 @@ def resort_karotype_and_rename(in_bam, ref_file, script_dir):
     if not os.path.exists(out_file):
         resort_script = os.path.join(script_dir, "resort_bam_karyotype.py")
         rename_script = os.path.join(script_dir, "rename_samples.py")
-        print "Resorting to karyotype", in_bam
+        print("Resorting to karyotype", in_bam)
         cl = ["python2.6", resort_script, ref_dict, in_bam]
         subprocess.check_call(cl)
-        print "Renaming samples", out_file
+        print("Renaming samples", out_file)
         cl = ["python2.6", rename_script, out_file]
         subprocess.check_call(cl)
     return out_file
@@ -193,7 +193,7 @@ def _update_config_w_custom(config, lane_info):
     custom = config["custom_algorithms"].get(lane_info.get("analysis", None),
             None)
     if custom:
-        for key, val in custom.iteritems():
+        for key, val in custom.items():
             config["algorithm"][key] = val
     return config
 

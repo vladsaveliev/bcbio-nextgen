@@ -233,7 +233,7 @@ def _variable_type_to_read_fn(vartype, records):
     return fn_map[vartype]
 
 def _arg_to_dict(x, requirements):
-    if isinstance(x, basestring):
+    if isinstance(x, str):
         return {"prefix": "", "position": None, "value": x}
     elif isinstance(x, dict) and "valueFrom" in x and x["valueFrom"].startswith("sentinel_runtime"):
         for r in requirements:

@@ -13,6 +13,7 @@ from bcbio.structural import (battenberg, cn_mops, cnvkit, delly, gridss,
                               lumpy, manta, metasv, prioritize, plot,
                               seq2c, validate, wham)
 from bcbio.variation import vcfutils
+from functools import reduce
 
 # Stratify callers by stage -- see `run` documentation below for definitions
 _CALLERS = {
@@ -48,7 +49,7 @@ def get_svcallers(data):
     svs = data["config"]["algorithm"].get("svcaller")
     if svs is None:
         svs = []
-    elif isinstance(svs, basestring):
+    elif isinstance(svs, str):
         svs = [svs]
     return svs
 
@@ -127,7 +128,7 @@ def batch_for_sv(samples):
     callers for parallel processing.
     """
     to_process, extras, background = _batch_split_by_sv(samples, "standard")
-    out = [cwlutils.samples_to_records(xs) for xs in to_process.values()] + extras
+    out = [cwlutils.samples_to_records(xs) for xs in list(to_process.values())] + extras
     return out
 
 def _batch_split_by_sv(samples, stage):
@@ -142,7 +143,7 @@ def _batch_split_by_sv(samples, stage):
                 svcaller = tz.get_in(["config", "algorithm", "svcaller"], x)
                 batch = dd.get_batch(x) or dd.get_sample_name(x)
                 if stage in ["precall", "ensemble"]:  # no batching for precall or ensemble methods
-                    if isinstance(batch, basestring) and batch != dd.get_sample_name(x):
+                    if isinstance(batch, str) and batch != dd.get_sample_name(x):
                         batch += "_%s" % dd.get_sample_name(x)
                     else:
                         batch = dd.get_sample_name(x)
@@ -169,7 +170,7 @@ def run(samples, run_parallel, stage):
     """
     to_process, extras, background = _batch_split_by_sv(samples, stage)
     processed = run_parallel("detect_sv", ([xs, background, stage]
-                                           for xs in to_process.values()))
+                                           for xs in list(to_process.values())))
     finalized = (run_parallel("finalize_sv", [([xs[0] for xs in processed], processed[0][0]["config"])])
                  if len(processed) > 0 else [])
     return extras + finalized

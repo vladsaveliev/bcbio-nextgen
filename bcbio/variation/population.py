@@ -269,7 +269,7 @@ def get_gemini_files(data):
     except ImportError:
         return {}
     return {"base": config.read_gemini_config()["annotation_dir"],
-            "files": annotations.get_anno_files().values()}
+            "files": list(annotations.get_anno_files().values())}
 
 def _group_by_batches(samples, check_fn):
     """Group data items into batches, providing details to retrieve results.

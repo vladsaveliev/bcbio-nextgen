@@ -173,7 +173,7 @@ def _cutadapt_trim_cmd(fastq_files, quality_format, adapters, out_files, data):
     # this behavior might not be what we want; we could also do two or
     # more passes of cutadapt
     cutadapt = os.path.join(os.path.dirname(sys.executable), "cutadapt")
-    adapter_cmd = " ".join(map(lambda x: "-a " + x, adapters))
+    adapter_cmd = " ".join(["-a " + x for x in adapters])
     ropts = " ".join(str(x) for x in
                      config_utils.get_resources("cutadapt", data["config"]).get("options", []))
     base_cmd = ("{cutadapt} {ropts} --times=2 --quality-base={quality_base} "

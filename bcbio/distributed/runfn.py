@@ -19,6 +19,7 @@ from bcbio.log import logger
 from bcbio.cwl import cwlutils
 from bcbio.distributed import multitasks
 from bcbio.pipeline import config_utils, run_info
+from functools import reduce
 
 def process(args):
     """Run the function in args.name given arguments in args.argfile.
@@ -85,7 +86,7 @@ def _write_wdl_outputs(argfile, out_keys):
             if not isinstance(recs, (list, tuple)):
                 recs = [recs]
             recs = list(utils.flatten(recs))
-            keys = sorted(list(set(reduce(operator.add, [r.keys() for r in recs]))))
+            keys = sorted(list(set(reduce(operator.add, [list(r.keys()) for r in recs]))))
             writer.writerow(keys)
             for rec in recs:
                 writer.writerow([_cwlvar_to_wdl(rec.get(k)) for k in keys])
@@ -144,7 +145,7 @@ def _get_record_attrs(out_keys):
     """Check for records, a single key plus output attributes.
     """
     if len(out_keys) == 1:
-        attr = out_keys.keys()[0]
+        attr = list(out_keys.keys())[0]
         if out_keys[attr]:
             return attr, out_keys[attr]
     return None, None
@@ -330,7 +331,7 @@ def _read_cwl_record(rec):
     out = []
     if isinstance(rec, dict):
         is_batched = all([isinstance(v, (list, tuple)) for v in rec.values()])
-        cur = [{} for _ in range(len(rec.values()[0]) if is_batched else 1)]
+        cur = [{} for _ in range(len(list(rec.values())[0]) if is_batched else 1)]
         for k in rec.keys():
             keys.add(k)
             val = rec[k]
@@ -479,7 +480,7 @@ def _collapse_to_cwl_record(samples, want_attrs):
 def _to_cwl(val):
     """Convert a value into CWL formatted JSON, handling files and complex things.
     """
-    if isinstance(val, basestring):
+    if isinstance(val, str):
         if os.path.exists(val) and os.path.isfile(val):
             val = {"class": "File", "path": val}
             secondary = []

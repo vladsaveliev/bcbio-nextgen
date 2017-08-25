@@ -195,14 +195,11 @@ def load_collectl(pattern, start_time, end_time):
             for tstamp, sample in raw.items():
                 for group, items in sample.items():
                     if group == 'disk':
-                        instances['disk'] = instances['disk'].union(
-                            items.keys())
+                        instances['disk'] = instances['disk'].union(items.keys())
                     elif group == 'net':
-                        instances['net'] = instances['net'].union(
-                            items.keys())
+                        instances['net'] = instances['net'].union(items.keys())
                     elif group == 'proc':
-                        instances['proc'] = instances['proc'].union(
-                            items.keys())
+                        instances['proc'] = instances['proc'].union(items.keys())
 
             cols = ['tstamp']
             cols.extend([

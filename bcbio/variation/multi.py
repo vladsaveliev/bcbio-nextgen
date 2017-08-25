@@ -161,8 +161,7 @@ def group_batches_joint(samples):
         return jointcaller, batch
     def _prep_data(data, items):
         for r in ["callable_regions", "variant_regions"]:
-            data[r] = list(set(filter(lambda x: x is not None,
-                                      [tz.get_in(("config", "algorithm", r), d) for d in items])))
+            data[r] = list(set([x for x in [tz.get_in(("config", "algorithm", r), d) for d in items] if x is not None]))
         data["work_bams"] = [x.get("align_bam", x.get("work_bam")) for x in items]
         data["vrn_files"] = [x["vrn_file"] for x in items]
         return data

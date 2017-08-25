@@ -78,8 +78,8 @@ def sample_to_bcbio(sample):
     return required + "," + ",".join([sample[x] for x in VALID_TCGA_FIELDS])
 
 def prioritize_normals(metadata):
-    normals = sorted(filter(lambda x: x["sample_type"] in
-                            PRIORITIZED_NORMAL_CODES.keys(), metadata),
+    normals = sorted([x for x in metadata if x["sample_type"] in
+                            list(PRIORITIZED_NORMAL_CODES.keys())],
                      key=lambda x: PRIORITIZED_NORMAL_CODES[x["sample_type"]])
     if len(normals) == 0:
         return [], []

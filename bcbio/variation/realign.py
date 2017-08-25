@@ -76,14 +76,14 @@ def has_aligned_reads(align_bam, region=None):
     """
     import pybedtools
     if region is not None:
-        if isinstance(region, basestring) and os.path.isfile(region):
+        if isinstance(region, str) and os.path.isfile(region):
             regions = [tuple(r) for r in pybedtools.BedTool(region)]
         else:
             regions = [region]
     with pysam.Samfile(align_bam, "rb") as cur_bam:
         if region is not None:
             for region in regions:
-                if isinstance(region, basestring):
+                if isinstance(region, str):
                     for item in cur_bam.fetch(str(region)):
                         return True
                 else:

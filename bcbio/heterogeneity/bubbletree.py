@@ -101,7 +101,7 @@ def _prep_cnv_file(cns_file, svcaller, work_dir, data):
                     reader = csv.reader(in_handle, dialect="excel-tab")
                     writer = csv.writer(out_handle)
                     writer.writerow(["chrom", "start", "end", "num.mark", "seg.mean"])
-                    reader.next()  # header
+                    next(reader)  # header
                     for chrom, start, end, _, log2, probes in (xs[:6] for xs in reader):
                         if chromhacks.is_autosomal(chrom):
                             writer.writerow([_to_ucsc_style(chrom), start, end, probes, log2])
@@ -143,7 +143,7 @@ def _identify_heterogeneity_blocks_seg(in_file, seg_file, params, work_dir, soma
     def _segment_by_cns(target_chrom, freqs, coords):
         with open(seg_file) as in_handle:
             reader = csv.reader(in_handle, dialect="excel-tab")
-            reader.next()  # header
+            next(reader)  # header
             for cur_chrom, start, end in (xs[:3] for xs in reader):
                 if cur_chrom == target_chrom:
                     block_freqs = []
@@ -367,7 +367,7 @@ if __name__ == "__main__":
               "min_depth": 15}
     for rec in bcf_in:
         if _is_possible_loh(rec, bcf_in, params, somatic(sys.argv[2], sys.argv[3])):
-            print(rec.filter.keys(), len(rec.filter))
+            print(list(rec.filter.keys()), len(rec.filter))
 
 _script = """
 .libPaths(c("{local_sitelib}"))

@@ -111,8 +111,8 @@ def fix_vcf_line(parts, ref_base):
         varinfo[4] = ",".join([complements[v] for v in ref.split(",")])
         genotypes = [swap[x] for x in genotypes]
     else:
-        print "Did not associate ref {0} with line: {1}".format(
-            ref_base, varinfo)
+        print("Did not associate ref {0} with line: {1}".format(
+            ref_base, varinfo))
     if varinfo is not None:
         return varinfo + genotypes
 
@@ -147,7 +147,7 @@ def fix_nonref_positions(in_file, ref_file):
                         try:
                             ref_base = ref2bit[parts[0]].get(pos-1, pos).upper()
                         except Exception as msg:
-                            print "Skipping line. Failed to retrieve reference base for %s\n%s" % (str(parts), msg)
+                            print("Skipping line. Failed to retrieve reference base for %s\n%s" % (str(parts), msg))
                     parts = fix_vcf_line(parts, ref_base)
                     if parts is not None:
                         out_handle.write("\t".join(parts) + "\n")
@@ -155,7 +155,7 @@ def fix_nonref_positions(in_file, ref_file):
 
 if __name__ == "__main__":
     if len(sys.argv) != 4:
-        print "Incorrect arguments"
-        print __doc__
+        print("Incorrect arguments")
+        print(__doc__)
         sys.exit(1)
     main(*sys.argv[1:])

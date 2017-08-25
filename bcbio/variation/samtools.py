@@ -28,7 +28,7 @@ def shared_variantcall(call_fn, name, align_bams, ref_file, items,
               name=name, region=region, fname=os.path.basename(align_bams[0])))
         variant_regions = bedutils.merge_overlaps(bedutils.population_variant_regions(items), items[0])
         target_regions = subset_variant_regions(variant_regions, region, out_file, items=items)
-        if (variant_regions is not None and isinstance(target_regions, basestring)
+        if (variant_regions is not None and isinstance(target_regions, str)
               and not os.path.isfile(target_regions)):
             vcfutils.write_empty_vcf(out_file, config)
         else:

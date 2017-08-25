@@ -29,7 +29,7 @@ def main(interval_file, seqdict_file=None):
                     all_parts.append(((chr_indexes[parts[0]], int(parts[1]),
                         int(parts[2])), parts))
                 except KeyError:
-                    print parts[0]
+                    print(parts[0])
         all_parts.sort()
         for (_, parts) in all_parts:
             out_handle.write("\t".join(parts) + "\n")

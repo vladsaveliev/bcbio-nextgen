@@ -103,7 +103,7 @@ def _normalize_cwl_inputs(items):
     else:
         assert len(with_validate) == 1, len(with_validate)
         assert len(set(vrn_files)) == 1
-        data = with_validate.values()[0]
+        data = list(with_validate.values())[0]
         data["vrn_file"] = vrn_files[0]
         return data
 
@@ -490,7 +490,7 @@ def _flatten_grading(stats):
         for vclass, vitems in sorted(stats["discordant"].get(vtype, {}).items()):
             for vreason, val in sorted(vitems.items()):
                 yield vtype, "discordant-%s-%s" % (vclass, vreason), val
-            yield vtype, "discordant-%s-total" % vclass, sum(vitems.itervalues())
+            yield vtype, "discordant-%s-total" % vclass, sum(vitems.values())
 
 def _has_grading_info(samples):
     for data in samples:
@@ -515,7 +515,7 @@ def _group_validate_samples(samples):
             for batch_key in (["metadata", "validate_batch"], ["metadata", "batch"],
                               ["description"]):
                 vname = tz.get_in(batch_key, data)
-                if vname and not (isinstance(vname, basestring) and vname.lower() in ["none", "false"]):
+                if vname and not (isinstance(vname, str) and vname.lower() in ["none", "false"]):
                     break
             if isinstance(vname, (list, tuple)):
                 vname = vname[0]
@@ -632,7 +632,7 @@ def _read_call_freqs(in_file, sample_name):
     out = {}
     with VariantFile(in_file) as call_in:
         for rec in call_in:
-            if rec.filter.keys() == ["PASS"]:
+            if list(rec.filter.keys()) == ["PASS"]:
                 for name, sample in rec.samples.items():
                     if name == sample_name:
                         alt, depth, freq = bubbletree.sample_alt_and_depth(rec, sample)

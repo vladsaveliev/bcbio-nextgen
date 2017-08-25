@@ -23,7 +23,7 @@ def _get_s3_files(local_dir, file_info, params):
     """Retrieve s3 files to local directory, handling STORMSeq inputs.
     """
     assert len(file_info) == 1
-    files = file_info.values()[0]
+    files = list(file_info.values())[0]
     fnames = []
     for k in ["1", "2"]:
         if files[k] not in fnames:

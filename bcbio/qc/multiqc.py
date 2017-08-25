@@ -126,7 +126,7 @@ def _get_input_files(samples, base_dir, tx_out_dir):
         sum_qc = tz.get_in(["summary", "qc"], data, {})
         if sum_qc in [None, "None"]:
             sum_qc = {}
-        elif isinstance(sum_qc, basestring):
+        elif isinstance(sum_qc, str):
             sum_qc = {dd.get_algorithm_qc(data)[0]: sum_qc}
         elif not isinstance(sum_qc, dict):
             raise ValueError("Unexpected summary qc: %s" % sum_qc)
@@ -134,7 +134,7 @@ def _get_input_files(samples, base_dir, tx_out_dir):
             if isinstance(pfiles, dict):
                 pfiles = [pfiles["base"]] + pfiles.get("secondary", [])
             # CWL: presents output files as single file plus associated secondary files
-            elif isinstance(pfiles, basestring):
+            elif isinstance(pfiles, str):
                 if os.path.exists(pfiles):
                     pfiles = [os.path.join(os.path.dirname(pfiles), x) for x in os.listdir(os.path.dirname(pfiles))]
                 else:
@@ -333,7 +333,7 @@ def _merge_metrics(samples, out_dir):
     for s in samples:
         s = _add_disambiguate(s)
         m = tz.get_in(['summary', 'metrics'], s)
-        if isinstance(m, basestring):
+        if isinstance(m, str):
             m = json.loads(m)
         if m:
             for me in m.keys():

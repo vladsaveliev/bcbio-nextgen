@@ -87,7 +87,7 @@ def _clean_regions(items, region):
     with utils.tmpfile() as tx_out_file:
         target = subset_variant_regions(variant_regions, region, tx_out_file, items)
         if target:
-            if isinstance(target, basestring) and os.path.isfile(target):
+            if isinstance(target, str) and os.path.isfile(target):
                 target = _load_regions(target)
             else:
                 target = [target]
