@@ -22,10 +22,10 @@ except ImportError:
     import urllib.request as urllib_request
 
 REMOTES = {
-    "requirements": "https://raw.githubusercontent.com/chapmanb/bcbio-nextgen/master/requirements-conda.txt",
-    "gitrepo": "git://github.com/chapmanb/bcbio-nextgen.git",
-    "system_config": "https://raw.github.com/chapmanb/bcbio-nextgen/master/config/bcbio_system.yaml",
-    "anaconda": "https://repo.continuum.io/miniconda/Miniconda2-latest-%s-x86_64.sh"}
+    "requirements": "https://raw.githubusercontent.com/vladsaveliev/bcbio-nextgen/master/requirements-conda.txt",
+    "gitrepo": "git://github.com/vladsaveliev/bcbio-nextgen.git",
+    "system_config": "https://raw.github.com/vladsaveliev/bcbio-nextgen/master/config/bcbio_system.yaml",
+    "anaconda": "https://repo.continuum.io/miniconda/Miniconda3-latest-%s-x86_64.sh"}
 
 def main(args, sys_argv):
     check_arguments(args)
@@ -67,12 +67,12 @@ def bootstrap_bcbionextgen(anaconda, args):
                                "git+%s%s#egg=bcbio-nextgen" % (REMOTES["gitrepo"], git_tag)])
 
 def install_conda_pkgs(anaconda):
-    if not os.path.exists(os.path.basename(REMOTES["requirements"])):
-        subprocess.check_call(["wget", "--no-check-certificate", REMOTES["requirements"]])
-    subprocess.check_call([anaconda["conda"], "install", "--quiet", "--yes", "nomkl"])
-    subprocess.check_call([anaconda["conda"], "install", "--quiet", "--yes",
-                           "-c", "bioconda", "-c", "conda-forge",
-                           "--file", os.path.basename(REMOTES["requirements"])])
+    # if not os.path.exists(os.path.basename(REMOTES["requirements"])):
+    #     subprocess.check_call(["wget", "--no-check-certificate", REMOTES["requirements"]])
+    # subprocess.check_call([anaconda["conda"], "install", "--quiet", "--yes", "nomkl"])
+    # cmd = [anaconda["conda"], "install", "--quiet", "--yes", "-c", "vladsaveliev", "-c", "bioconda", "-c", "conda-forge", "bcbio-nextgen"]
+    # print(" ".join(cmd))
+    # subprocess.check_call(cmd)
     return os.path.join(anaconda["dir"], "bin", "bcbio_nextgen.py")
 
 def _guess_distribution():
@@ -163,7 +163,7 @@ def bcbio_tmpdir():
     os.chdir(work_dir)
     yield work_dir
     os.chdir(orig_dir)
-    shutil.rmtree(work_dir)
+    # shutil.rmtree(work_dir)
 
 def check_arguments(args):
     """Ensure argruments are consistent and correct.

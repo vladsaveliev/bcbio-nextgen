@@ -29,10 +29,10 @@ from bcbio.distributed.transaction import file_transaction
 from bcbio.pipeline import datadict as dd
 
 REMOTES = {
-    "requirements": "https://raw.githubusercontent.com/chapmanb/bcbio-nextgen/master/requirements-conda.txt",
-    "gitrepo": "https://github.com/chapmanb/bcbio-nextgen.git",
-    "cloudbiolinux": "https://github.com/chapmanb/cloudbiolinux/archive/master.tar.gz",
-    "genome_resources": "https://raw.github.com/chapmanb/bcbio-nextgen/master/config/genomes/%s-resources.yaml",
+    "requirements": "https://raw.githubusercontent.com/vladsaveliev/bcbio-nextgen/master/requirements-conda.txt",
+    "gitrepo": "https://github.com/vladsaveliev/bcbio-nextgen.git",
+    "cloudbiolinux": "https://github.com/vladsaveliev/cloudbiolinux/archive/master.tar.gz",
+    "genome_resources": "https://raw.github.com/vladsaveliev/bcbio-nextgen/master/config/genomes/%s-resources.yaml",
     "snpeff_dl_url": ("http://downloads.sourceforge.net/project/snpeff/databases/v{snpeff_ver}/"
                       "snpEff_v{snpeff_ver}_{genome}.zip")}
 SUPPORTED_GENOMES = ["GRCh37", "hg19", "hg38", "hg38-noalt", "mm10", "mm9",
@@ -738,4 +738,4 @@ def bcbio_tmpdir():
     os.chdir(work_dir)
     yield work_dir
     os.chdir(orig_dir)
-    shutil.rmtree(work_dir)
+    # shutil.rmtree(work_dir)
