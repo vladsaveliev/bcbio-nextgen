@@ -48,7 +48,10 @@ def map_wrap(f):
     """
     @functools.wraps(f)
     def wrapper(*args, **kwargs):
-        return apply(f, *args, **kwargs)
+        if len(args) == 1:
+            return f(*args[0])
+        else:
+            return f(*args[0], **args[1])
     return wrapper
 
 def transform_to(ext):
