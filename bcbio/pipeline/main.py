@@ -144,7 +144,6 @@ def variant2pipeline(config, run_info_yaml, parallel, dirs, samples):
         with profile.report("hla typing", dirs):
             samples = hla.run(samples, run_parallel)
 
-    import pprint
     ## Variant calling on sub-regions of the input file (full cluster)
     with prun.start(_wres(parallel, ["gatk", "picard", "variantcaller"]),
                     samples, config, dirs, "full",
@@ -153,8 +152,7 @@ def variant2pipeline(config, run_info_yaml, parallel, dirs, samples):
             samples = region.parallel_prep_region(samples, run_parallel)
         with profile.report("variant calling", dirs):
             samples = genotype.parallel_variantcall_region(samples, run_parallel)
-            print('variant calling:')
-            pprint.pprint([(s[0]['description'], s[0]['config']['algorithm']['variantcaller']) for s in samples])
+            STEP(samples)
         with profile.report("joint squaring off/backfilling", dirs):
             samples = joint.square_off(samples, run_parallel)
     ## Finalize variants, BAMs and population databases (per-sample multicore cluster)
@@ -166,11 +164,8 @@ def variant2pipeline(config, run_info_yaml, parallel, dirs, samples):
                     multiplier=structural.parallel_multiplier(samples)) as run_parallel:
         with profile.report("variant post-processing", dirs):
             samples = run_parallel("postprocess_variants", samples)
-            print('postporcess variants:')
-            pprint.pprint([(s[0]['description'], s[0]['config']['algorithm']['variantcaller']) for s in samples])
+            STEP(samples)
             samples = run_parallel("split_variants_by_sample", samples)
-            print('split_variants_by_sample:')
-            pprint.pprint([(s[0]['description'], s[0]['config']['algorithm']['variantcaller']) for s in samples])
         with profile.report("prepped BAM merging", dirs):
             samples = region.delayed_bamprep_merge(samples, run_parallel)
         with profile.report("validation", dirs):
@@ -178,44 +173,35 @@ def variant2pipeline(config, run_info_yaml, parallel, dirs, samples):
             samples = genotype.combine_multiple_callers(samples)
         with profile.report("ensemble calling", dirs):
             samples = ensemble.combine_calls_parallel(samples, run_parallel)
-            print('ensemble calling:')
-            pprint.pprint([(s[0]['description'], s[0]['config']['algorithm']['variantcaller']) for s in samples])
+            STEP(samples)
         with profile.report("validation summary", dirs):
             samples = validate.summarize_grading(samples)
         with profile.report("structural variation", dirs):
             samples = structural.run(samples, run_parallel, "initial")
-            print('structural variation initial:')
-            pprint.pprint([(s[0]['description'], s[0]['config']['algorithm']['variantcaller']) for s in samples])
+            STEP(samples)
         with profile.report("structural variation", dirs):
             samples = structural.run(samples, run_parallel, "standard")
-            print('structural variation standard:')
-            pprint.pprint([(s[0]['description'], s[0]['config']['algorithm']['variantcaller']) for s in samples])
+            STEP(samples)
         with profile.report("structural variation ensemble", dirs):
             samples = structural.run(samples, run_parallel, "ensemble")
-            print('structural variation ensemble:')
-            pprint.pprint([(s[0]['description'], s[0]['config']['algorithm']['variantcaller']) for s in samples])
+            STEP(samples)
         with profile.report("structural variation validation", dirs):
             samples = run_parallel("validate_sv", samples)
-            print('validate_sv:')
-            pprint.pprint([(s[0]['description'], s[0]['config']['algorithm']['variantcaller']) for s in samples])
+            STEP(samples)
         with profile.report("heterogeneity", dirs):
             samples = heterogeneity.run(samples, run_parallel)
-            print('heterogeneity:')
-            pprint.pprint([(s[0]['description'], s[0]['config']['algorithm']['variantcaller']) for s in samples])
+            STEP(samples)
         with profile.report("population database", dirs):
             samples = population.prep_db_parallel(samples, run_parallel)
-            print('population database:')
-            pprint.pprint([(s[0]['description'], s[0]['config']['algorithm']['variantcaller']) for s in samples])
+            STEP(samples)
         with profile.report("peddy check", dirs):
             samples = peddy.run_peddy_parallel(samples, run_parallel)
         with profile.report("quality control", dirs):
             samples = qcsummary.generate_parallel(samples, run_parallel)
-            print('population database:')
-            pprint.pprint([(s[0]['description'], s[0]['config']['algorithm']['variantcaller']) for s in samples])
+            STEP(samples)
         with profile.report("archive", dirs):
             samples = archive.compress(samples, run_parallel)
-            print('archive:')
-            pprint.pprint([(s[0]['description'], s[0]['config']['algorithm']['variantcaller']) for s in samples])
+            STEP(samples)
         with profile.report("upload", dirs):
             samples = run_parallel("upload_samples", samples)
             for sample in samples:
@@ -233,6 +219,12 @@ def _debug_samples(i, samples):
             [x.get("variantcaller") for x in sample.get("variants", [])], \
             sample.get("work_bam"), \
             sample.get("vrn_file"))
+
+def STEP(samples, title=None):
+    if title:
+        print(title + ':')
+    import pprint
+    pprint.pprint([(s[0]['description'], s[0]['metadata']['phenotype'], str(s[0]['config']['algorithm']['qc'])) for s in samples])
 
 def standardpipeline(config, run_info_yaml, parallel, dirs, samples):
     ## Alignment and preparation requiring the entire input file (multicore cluster)
@@ -543,3 +535,4 @@ SUPPORTED_PIPELINES = {"variant2": variant2pipeline,
 
 def _is_smallrnaseq(pipeline):
     return pipeline.lower() == "smallrna-seq"
+
