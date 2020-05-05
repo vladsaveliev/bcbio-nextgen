@@ -25,4 +25,14 @@ with open(os.path.join(here, 'bcbio', 'pipeline', 'version.py'), 'w') as version
 
 # dependencies are installed via Conda from
 # https://github.com/chapmanb/cloudbiolinux/blob/master/contrib/flavor/ngs_pipeline_minimal/packages-conda.yaml
-setuptools.setup(version=VERSION)
+setuptools.setup(
+    name='bcbio',
+    script_name='bcbio_nextgen.py',
+    version=VERSION,
+    packages=['bcbio'],
+    include_package_data=True,
+    zip_safe=False,
+    scripts=[
+        os.path.join('scripts', 'bcbio_nextgen.py'),
+    ],
+)
